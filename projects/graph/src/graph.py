@@ -22,18 +22,18 @@ class Graph:
 
     def bft(self, start_vert):
 
-        q = []
+        q = Queue()
 
-        q.append(start_vert)
+        q.put(start_vert)
         
         visited = set()
 
-        while len(q) > 0:
-            v = q.pop()
+        while q.qsize() > 0:
+            v = q.get()
             if v not in visited:
                 visited.add(v)
                 for next_vert in self.vertices[v]:
-                    q.append(next_vert)
+                    q.put(next_vert)
 
         print(visited, 'bft')
 
