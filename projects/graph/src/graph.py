@@ -53,6 +53,17 @@ class Graph:
                     q.put(next_vert)
 
         print(visited,'dft')
+    
+    # using recursion
+        # q = LifoQueue()
+        # q.put(first_vert)
+        # visited= set()
+
+        # for child_vert in self.vertices[first_vert]:
+        #     if child_vert is not in visited:
+        #         new_vert = self.dft(child_vert)
+        
+        # return visited
 
     def bfs(self, start_vert, end_vert):
 
