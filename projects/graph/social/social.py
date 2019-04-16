@@ -15,6 +15,7 @@ class SocialGraph:
         """
         Creates a bi-directional friendship
         """
+
         if userID == friendID:
             print("WARNING: You cannot be friends with yourself")
         elif friendID in self.friendships[userID] or userID in self.friendships[friendID]:
@@ -99,7 +100,20 @@ class SocialGraph:
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populateGraph(10, 2)
-    print(sg.friendships)
+    sg.populateGraph(1000, 5)
+    # print(sg.friendships)
     connections = sg.getAllSocialPaths(1)
     print(connections)
+
+
+# Questions:
+
+# To create 100 users with an average of 10 friends each, how many times would you need to call addFriendship()? Why?
+
+    # 50 times because each friendship is created two ways.
+
+
+
+# If you create 1000 users with an average of 5 random friends each, what percentage of other users will be in a particular user's extended social network? What is the average degree of separation between a user and those in his/her extended network?
+
+    # The average degree of seperation would be 5. Almost all (90%+) would be connected/part of each others extended social network.
