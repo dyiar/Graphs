@@ -116,4 +116,4 @@ if __name__ == '__main__':
 
 # If you create 1000 users with an average of 5 random friends each, what percentage of other users will be in a particular user's extended social network? What is the average degree of separation between a user and those in his/her extended network?
 
-    # The average degree of seperation would be 5. Almost all (90%+) would be connected/part of each others extended social network.
+    # The average degree of seperation would be 6. It should cover about almost 100% of the users.
