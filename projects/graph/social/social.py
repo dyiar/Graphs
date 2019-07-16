@@ -1,4 +1,5 @@
-
+import random
+from queue import Queue
 
 class User:
     def __init__(self, name):
@@ -14,6 +15,7 @@ class SocialGraph:
         """
         Creates a bi-directional friendship
         """
+
         if userID == friendID:
             print("WARNING: You cannot be friends with yourself")
         elif friendID in self.friendships[userID] or userID in self.friendships[friendID]:
@@ -47,8 +49,20 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(numUsers):
+            self.addUser(f'User {i}')
 
         # Create friendships
+        possibleFriendships = []
+        for userID in self.users:
+            for friendID in range(userID + 1, self.lastID + 1):
+                possibleFriendships.append( (userID, friendID) )
+        
+        random.shuffle(possibleFriendships)
+        
+        for i in range(numUsers * avgFriendships //2):
+            friendship = possibleFriendships[i]
+            self.addFriendship(friendship[0], friendship[1])
 
     def getAllSocialPaths(self, userID):
         """
@@ -61,12 +75,45 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+
+        q = Queue()
+
+        q.put([userID])
+        path = []
+
+        while q.qsize() > 0:
+            path = q.get()
+            v = path[-1]
+            if v not in visited:
+                # print(self.friendships[v])
+                # visited.update( {userID : path})
+                visited.update({v:path})
+                for next_id in self.friendships[v]:
+                    new_path = path[:]
+                    new_path.append(next_id)
+                    # print(new_path, 'new path')
+                    # print(next_id, 'next id')
+                    q.put(new_path)
+
         return visited
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
-    sg.populateGraph(10, 2)
-    print(sg.friendships)
+    sg.populateGraph(1000, 5)
+    # print(sg.friendships)
     connections = sg.getAllSocialPaths(1)
     print(connections)
+
+
+# Questions:
+
+# To create 100 users with an average of 10 friends each, how many times would you need to call addFriendship()? Why?
+
+    # 50 times because each friendship is created two ways.
+
+
+
+# If you create 1000 users with an average of 5 random friends each, what percentage of other users will be in a particular user's extended social network? What is the average degree of separation between a user and those in his/her extended network?
+
+    # The average degree of seperation would be 6. It should cover about almost 100% of the users.

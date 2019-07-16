@@ -2,6 +2,8 @@ from room import Room
 from player import Player
 from world import World
 
+from queue import LifoQueue, Queue
+
 import random
 
 # Load world
@@ -26,8 +28,103 @@ player = Player("Name", world.startingRoom)
 
 
 # FILL THIS IN
-traversalPath = ['n', 's']
+traversalPath = []
+# q = LifoQueue()
+# q.put([player.currentRoom.id])
+# path = []
+# visited = {}
+# exits = player.currentRoom.getExits()
 
+# while q.qsize() > 0:
+#     path = q.get()
+#     v = path[-1]
+#     print(exits, 'exits')
+
+#     if v not in visited:
+#         visited.update({v:traversalPath})
+
+#         for next_exit in exits:
+#             # print(next_exit, 'next exit')
+#             player.travel(next_exit)
+#             traversalPath.append(next_exit)
+#             q.put([player.currentRoom.id])
+
+# print(traversalPath, 'traveled')
+# print(visited, 'visited')
+# print(path, 'path')
+
+def opposite_direction(d):
+    if d == 'n':
+        return 's'
+    elif d == 's':
+        return 'n'
+    elif d == 'w':
+        return 'e'
+    elif d == 'e':
+        return 'w'
+
+myGraph = {}
+
+def backtrack_function(currentRoom, targetRoom):
+    q = Queue()
+    q.put([{"room": currentRoom, "direction": None}])
+    visited = set()
+    while q.qsize() > 0:
+        path = q.get()
+        room = path[-1]['room']
+        if room not in visited:
+            visited.add(room)
+            if room == targetRoom:
+                return path
+
+            for adj_rooms in myGraph[room]:
+                if myGraph[room][adj_rooms] != '?':
+                    new_path = path[:] + [{"room": myGraph[room][adj_rooms], "direction": adj_rooms}]
+                    q.put(new_path)
+
+
+unknowns = LifoQueue()
+
+def create_room():
+    myGraph[player.currentRoom.id] = {}
+    for directions in player.currentRoom.getExits():
+        myGraph[player.currentRoom.id][directions] = '?'
+
+
+create_room()
+total = 0
+
+while total <= len(world.rooms)+1:
+    for next_exit in myGraph[player.currentRoom.id]:
+        if myGraph[player.currentRoom.id][next_exit] == '?':
+            previous_room = player.currentRoom.id
+            player.travel(next_exit)
+            traversalPath.append(next_exit)
+
+            if player.currentRoom.id not in myGraph:
+                create_room()
+            
+            myGraph[previous_room][next_exit] = player.currentRoom.id
+            myGraph[player.currentRoom.id][opposite_direction(next_exit)] = previous_room
+
+            for next_exit in myGraph[previous_room]:
+                if myGraph[previous_room][next_exit] == '?':
+                    unknowns.put(previous_room)
+            
+            total +=1
+            break
+
+    else:
+
+        v = unknowns.get() 
+        path = backtrack_function(player.currentRoom.id, v)
+        for step in path:
+            if step['direction']:
+                player.travel(step['direction'])
+                traversalPath.append(step['direction'])
+
+
+# print(myGraph)
 
 
 
